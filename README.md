@@ -1,6 +1,6 @@
 # transcript
 
-> One script to transcribe YouTube, TikTok, and Instagram Reels — no setup required.
+> One script to transcribe YouTube, TikTok, and Instagram Reels with dependencies managed by `uv`.
 
 Paste any video URL and get a `.txt` transcript in seconds. Platform is auto-detected. YouTube videos with captions are fetched instantly; everything else is transcribed locally with [Whisper](https://github.com/openai/whisper).
 
@@ -11,7 +11,7 @@ Paste any video URL and get a `.txt` transcript in seconds. Platform is auto-det
 - **Auto-detects platform** from the URL — YouTube, TikTok, or Instagram
 - **YouTube caption API first** — instant transcripts with no AI overhead when captions exist
 - **Whisper fallback** — if a YouTube video has no captions, or for TikTok/Instagram, audio is downloaded and transcribed locally
-- **Zero setup** — runs via `uv` with no virtual environment or install step
+- **Single-file setup** — `uv` installs the declared Python packages on first run
 - **Batch support** — pass multiple URLs at once, even across different platforms
 - **Configurable Whisper model** — trade speed for accuracy with `--model`
 
@@ -20,8 +20,10 @@ Paste any video URL and get a `.txt` transcript in seconds. Platform is auto-det
 ## Requirements
 
 - [uv](https://github.com/astral-sh/uv) — Python package runner (`brew install uv` or see [uv docs](https://docs.astral.sh/uv/getting-started/installation/))
+- Internet access for video captions, media downloads, and first-run package or model downloads
+- `ffmpeg` for Whisper transcription and media processing (`brew install ffmpeg` on macOS)
 
-That's it. Dependencies (`youtube-transcript-api`, `yt-dlp`, `openai-whisper`) are declared inline and installed automatically on first run.
+Dependencies (`youtube-transcript-api`, `yt-dlp`, `openai-whisper`) are declared inline and installed by `uv` on first run. A YouTube video with captions does not load a Whisper model, but the first `uv run` still resolves the declared packages.
 
 ---
 
@@ -92,7 +94,7 @@ Please keep pull requests focused — one feature or fix per PR.
 
 ## License
 
-MIT — do whatever you want, attribution appreciated.
+[MIT](LICENSE)
 
 ---
 
@@ -101,4 +103,4 @@ MIT — do whatever you want, attribution appreciated.
 - [openai/whisper](https://github.com/openai/whisper) — speech recognition model
 - [yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp) — video/audio downloader
 - [jdepoix/youtube-transcript-api](https://github.com/jdepoix/youtube-transcript-api) — YouTube caption fetching
-- [astral-sh/uv](https://github.com/astral-sh/uv) — fast Python package runner that makes zero-setup scripts possible
+- [astral-sh/uv](https://github.com/astral-sh/uv) — Python package runner for the script's inline dependencies

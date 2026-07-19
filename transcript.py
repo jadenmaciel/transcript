@@ -11,11 +11,6 @@ import tempfile
 import urllib.request
 from pathlib import Path
 
-import yt_dlp
-from youtube_transcript_api import YouTubeTranscriptApi
-from youtube_transcript_api._errors import NoTranscriptFound, TranscriptsDisabled
-
-_yt_api = YouTubeTranscriptApi()
 _whisper_model = None  # lazy-loaded
 
 
@@ -67,7 +62,9 @@ def sanitize_filename(title: str) -> str:
 
 
 def fetch_yt_captions(video_id: str) -> str:
-    transcript = _yt_api.fetch(video_id)
+    from youtube_transcript_api import YouTubeTranscriptApi
+
+    transcript = YouTubeTranscriptApi().fetch(video_id)
     return " ".join(snippet.text for snippet in transcript.snippets)
 
 
@@ -90,6 +87,8 @@ def load_whisper(model_name: str):
 
 
 def download_audio(url: str, tmp_dir: Path) -> tuple[Path, str, str]:
+    import yt_dlp
+
     ydl_opts = {
         "format": "bestaudio/best",
         "outtmpl": str(tmp_dir / "%(id)s.%(ext)s"),
@@ -119,6 +118,8 @@ def transcribe_audio(audio_path: Path, model) -> str:
 # ── Per-platform processing ───────────────────────────────────────────────────
 
 def process_youtube(url: str, output_dir: Path, model_name: str) -> None:
+    from youtube_transcript_api._errors import NoTranscriptFound, TranscriptsDisabled
+
     video_id = extract_video_id(url)
     if not video_id:
         print(f"  [SKIP] Could not parse YouTube video ID from: {url}")
