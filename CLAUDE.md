@@ -50,3 +50,12 @@ Loaded lazily via `load_whisper(model_name)` — only initialized on the first U
 Transcripts saved as `.txt` files in the directory where the script is run (`Path(".")`).
 - YouTube (captions): `{sanitized_title}.txt`
 - All others: `{slugified_title}.txt` (collision-safe with `{slug}-{id[:8]}.txt`)
+
+## Tests
+
+The pure-function and CLI tests do not make network calls or download models:
+
+```bash
+python -m unittest -v
+python transcript.py --help
+```
